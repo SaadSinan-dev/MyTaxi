@@ -1,6 +1,6 @@
 name: my_taxi
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -10,12 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.6
 
   cupertino_icons: ^1.0.8
   geolocator: ^10.1.0
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -23,7 +24,6 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
-
   uses-material-design: true
 
   fonts:
@@ -36,5 +36,5 @@ flutter:
     - family: RobotoCondensed
       fonts:
         - asset: assets/fonts/FacultyGlyphic-Regular.ttf
-        
+
           style: italic
