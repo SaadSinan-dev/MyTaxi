@@ -1,210 +1,164 @@
-# MyTaxi
+# My Taxi — Flutter Ride-Hailing App (UI & Architecture Foundation)
 
-A polished, production-quality Flutter ride-booking UI application featuring real-time GPS location, an interactive tile map, animated multi-screen navigation, and a complete passenger-side interface built on Material 3.
-
----
-
-## Overview
-
-MyTaxi is a passenger-facing mobile application that covers the full visual flow of a ride-booking experience. Starting from an animated splash screen, the user proceeds through login or sign-up, lands on a live map screen where GPS coordinates are resolved at runtime, selects a ride type, and navigates the rest of the app through an animated drawer. All screens — rides history, wallet, saved places, settings, and help — are fully implemented at the UI layer with realistic static data. Backend integration is structurally scaffolded but not yet connected.
+A clean-architecture Flutter foundation for a ride-hailing application, built with Cubit-based state management, a fully tokenized design system, and a bilingual (Arabic/English) theming layer. This repository represents the architectural backbone of the app: navigation, theming, and the authentication flow, structured to scale into a complete production product.
 
 ---
 
-## Features
+## Why This Project Matters
 
-- **Animated splash screen** with staggered fade/slide transitions for the icon, title, tagline, and pulsing loading dots; auto-navigates to Login after delay via a `FadeTransition` route transition
-- **Login screen** with phone number + password form validation, show/hide password toggle, "Remember Me" checkbox, "Forgot Password?" button, and placeholder Google / Apple social login buttons
-- **Sign-up screen** with full name, phone, password, and confirm-password fields; real-time inline validation including password-match check
-- **Live GPS location** resolved at runtime via `geolocator` with runtime permission handling (request, denied, permanently denied) and a dedicated error view with a one-tap retry action
-- **Map skeleton loader** — a `CustomPainter`-based animated screen that paints map-like tiles, a horizontal shimmer sweep, and faint road lines while GPS resolves; eliminates the black-screen flash entirely
-- **Interactive map** powered by `flutter_map` with MapTiler Streets tiles, tile fade-in, an `onMapReady` callback for smooth reveal via `AnimatedOpacity`, and a location-pin marker at the user's position
-- **Ride-type selector** — Economy, Comfort, XL — rendered as `AnimatedContainer` cards with price and ETA; selection state managed locally
-- **Glassmorphism bottom panel** on the map screen using `BackdropFilter` blur with a frosted-glass card and "Confirm" booking button
-- **Animated navigation drawer** with staggered per-tile entrance animations (`Interval`-based), press-scale haptic feedback, active-state highlighting, optional badge support per item, and a coordinated footer reveal
-- **Rides screen** with a current-ride summary card and static ride-history list
-- **Wallet screen** showing available balance, payment methods (Visa card + Cash), recent transaction list, and an "Add Funds" button
-- **Saved Places screen** with Home, Work, Airport, and custom favourite entries, plus an "Add New Place" button
-- **Settings screen** with user profile card, language preference, notifications toggle, Privacy & Security, About App, and functional logout that clears the navigation stack
-- **Help & Support screen** with quick-help category tiles (Contact Support, Payment Issue, Driver Complaint, Lost Item) and a static FAQ list
-- **Light and dark theme** — full Material 3 `ThemeData` definitions for both modes, switched via `ValueNotifier<ThemeMode>` without rebuilding the widget tree
-- **Locale-aware typography** — `Almarai` font for Arabic, `RobotoCondensed` for English, resolved at startup from the app `Locale`
-- **Floating custom app bar** — rounded, shadowed `CustomAppBar` implementing `PreferredSizeWidget`, supporting drawer toggle, back button, optional subtitle, action buttons with badge overlay, and haptic feedback
+Most portfolio Flutter apps stop at "a few screens that look nice." This one is built the way a real engineering team would start a production app: a dedicated `core` layer for cross-cutting concerns (theme, routing, design tokens, shared widgets), a `features` layer organized by domain, and a Cubit-driven state layer that keeps UI code free of business logic.
+
+It demonstrates the discipline to set up an app correctly *before* writing screens — the kind of foundation that prevents a codebase from turning into spaghetti six months into a project.
+
+---
+
+## Key Features
+
+Based strictly on what is implemented in the code:
+
+- **Centralized Design System** — a single source of truth for colors (`AppColors`), spacing (`AppSpacing`), and typography (`AppFonts`), so every screen pulls from the same tokens instead of hardcoded values.
+- **Light & Dark Theme Support** — fully defined `ThemeData` for both light and dark mode (`LightTheme`, `DarkTheme`), covering app bars, cards, buttons, and input fields, with runtime switching via a `ValueNotifier<ThemeMode>`.
+- **Locale-Aware Typography** — automatic font-family switching between Arabic (`Almarai`) and English (`RobotoCondensed`) based on the active `Locale`, with helper methods to query font family and locale direction from any widget.
+- **Cubit-Based Authentication Flow** — `LoginCubit` and `SignUpCubit` (from `flutter_bloc`) manage password visibility toggles, a "remember me" flag, and async submission states (`initial`, `loading`, `success`, `error`) with immutable, `copyWith`-driven state classes.
+- **Animated Navigation Drawer** — a custom side bar (`AppSideBar`) with a staggered entrance animation built on a single `AnimationController`, including:
+  - An animated user header with gradient background and slide/fade transitions
+  - Section labels and a width-animated divider
+  - Tappable, hapticfeedback-enabled tiles with active-state indicators
+  - A dedicated, animated logout action in the footer
+- **Custom Branded App Bar** — a reusable `CustomAppBar` with rounded container styling, a drawer toggle, and a notification bell with an unread-indicator dot.
+- **Centralized Route Management** — all named routes declared in a single `AppRoutes` class, with `BlocProvider`-wrapped routes for screens that need Cubit access (login, sign-up).
+- **Form Validation Ready** — the login screen is wired for `Form`/`GlobalKey<FormState>` validation and integrates with a validator layer for phone and password fields.
+- **Domain-Driven Folder Scaffolding** — `entities`, `repositories`, and `usecases` directories are already structured under each feature, following Clean Architecture conventions, ready to be populated as business logic is implemented.
 
 ---
 
 ## Tech Stack
 
-| Concern | Solution |
+| Layer | Technology |
 |---|---|
-| Framework | Flutter / Dart |
-| State management | `setState` + `ValueNotifier` |
-| Navigation | Named routes via `MaterialApp.routes` |
-| Maps | `flutter_map` + `latlong2` |
-| Map tiles | MapTiler Streets API |
-| GPS | `geolocator` |
-| Animations | `AnimationController`, `CurvedAnimation`, `Interval`, `CustomPainter` |
-| UI effects | `BackdropFilter` (blur / glassmorphism) |
-| Fonts | RobotoCondensed (en), Almarai (ar) |
-| Haptics | `HapticFeedback` (light, selection, medium) |
+| Framework | Flutter (Dart) |
+| State Management | `flutter_bloc` (Cubit pattern) |
+| Architecture | Clean Architecture (presentation / domain layering) |
+| Theming | Native `ThemeData`, `ColorScheme`, Material 3 (`useMaterial3: true`) |
+| Localization | Locale-based font switching (Arabic / English) |
+| Design System | Custom token classes (`AppColors`, `AppFonts`, `AppSpacing`) |
 
 ---
 
-## Project Structure
+## Project Architecture
+
+The project follows a **feature-first, layered Clean Architecture** approach:
+
+```
+core/        → Shared, app-wide concerns (theme, routing, design tokens, shared widgets)
+features/    → Business domains, each split into:
+  domain/        → entities, repositories, usecases (business rules — scaffolded)
+  presentation/  → cubit (state) + screens (UI) + widgets
+```
+
+This separation keeps UI components dumb and reusable, business rules independent of Flutter, and state management predictable through unidirectional Cubit flows (`UI → Cubit → State → UI`).
+
+---
+
+## Folder & Code Structure
 
 ```
 lib/
-├── main.dart                          # Entry point — initialises App with en_US locale
-├── app.dart                           # MaterialApp, named routes, ValueListenableBuilder for theme
+├── app.dart                          # Root widget: MaterialApp, theme & locale wiring
 │
 ├── core/
-│   ├── app_colors.dart                # Centralised colour palette (brand, status, taxi-specific)
-│   ├── app_fonts.dart                 # Locale-aware font resolver (Arabic / English)
-│   ├── constants.dart                 # App-wide constants (MapTiler API key)
-│   └── theme/
-│       ├── app_theme.dart             # Full light and dark ThemeData definitions (Material 3)
-│       └── theme_controller.dart      # Global ValueNotifier<ThemeMode>
+│   ├── colors/app_colors.dart        # Brand, status, and domain-specific color tokens
+│   ├── constants/app_constants.dart  # App-wide constants (e.g. map API key)
+│   ├── fonts/app_fonts.dart          # Locale-aware font family resolution
+│   ├── spacing/app_spacing.dart      # Standardized spacing scale (xs → xxl)
+│   ├── routing/app_routes.dart       # Centralized named routes
+│   ├── theme/
+│   │   ├── app_theme.dart            # Theme entry point (light/dark dispatch)
+│   │   ├── light_theme.dart          # Full light ThemeData definition
+│   │   ├── dark_theme.dart           # Full dark ThemeData definition
+│   │   └── theme_controller.dart     # Global ThemeMode notifier
+│   └── widgets/
+│       ├── appbar/app_bar.dart       # Reusable branded app bar
+│       ├── bottombar/bottom_bar.dart # Reserved for bottom navigation (in progress)
+│       └── sidebar/
+│           ├── app_side_bar.dart           # Drawer composition & navigation logic
+│           ├── models/side_bar_item_model.dart
+│           └── widgets/
+│               ├── animated_drawer_tile.dart
+│               ├── side_bar_header.dart
+│               ├── side_bar_footer.dart
+│               └── side_bar_tile.dart      # Section labels & divider
 │
-├── screens/
-│   ├── splash_screen.dart             # Animated splash → Login (fade route transition)
-│   ├── home_screen.dart               # Scaffold host: CustomAppBar + AppSideBar + LocationBody
-│   ├── rides_screen.dart              # Current ride card + static ride history list
-│   ├── wallet_screen.dart             # Balance, payment methods, transactions, Add Funds
-│   ├── savedplaces_screen.dart        # Favourite destinations list + Add New Place
-│   ├── settings_screen.dart           # Profile card, preferences, account options, logout
-│   ├── help_screen.dart               # Quick-help tiles + static FAQ entries
-│   └── location/
-│       ├── body.dart                  # GPS fetch, skeleton loader, error view, ride selector, glass panel
-│       └── map.dart                   # FlutterMap wrapper: placeholder → AnimatedOpacity reveal
-│   └── login/
-│       ├── login_screen.dart          # Phone/password form, social buttons, navigation to sign-up
-│       └── signup_screen.dart         # Registration form with 4 fields and inline validation
-│
-└── widgets/
-    ├── app_bar.dart                   # CustomAppBar — floating, rounded, with badge action support
-    ├── bottom_bar.dart                # (empty stub — not yet implemented)
-    └── sidebar/
-        ├── app_sidebar.dart           # Drawer scaffold, navigation logic, animation controller
-        ├── animated_drawer_tile.dart  # Per-tile staggered entrance + press-scale animation
-        ├── sidebar_header.dart        # Avatar, name, phone, online indicator (animated)
-        ├── sidebar_footer.dart        # Version label + logout press area (animated)
-        ├── sidebar_components.dart    # SectionLabel, SideBarDivider, StatChip, CustomVerticalDivider
-        └── sidebar_item_model.dart    # SideBarItem data model (icon, label, route, optional badge)
+└── features/
+    └── auth/
+        ├── domain/                   # entities / repositories / usecases (scaffolded)
+        └── presentation/
+            ├── cubit/
+            │   ├── login/login_cubit.dart + login_state.dart
+            │   └── signup/sign_up_cubit.dart + sign_up_state.dart
+            └── screens/
+                └── login/login_screen.dart
 ```
+
+> **Note:** `app_routes.dart` references additional screens (home, rides, wallet, saved places, settings, help, splash, sign-up) that define the intended scope of the application. This repository snapshot includes the core architecture and the login flow; remaining feature screens are part of the active build-out.
 
 ---
 
-## Architecture
+## How It Works
 
-The project follows a **screen-first, component-extracted** layout. Each screen owns its local state via `StatefulWidget` and `setState`. Cross-cutting concerns (theme, colours, fonts, constants) are isolated in `core/`. Reusable UI components live in `widgets/`. The single piece of shared app state (theme mode) uses a `ValueNotifier` — no external state management library is introduced. This keeps the codebase approachable while leaving a clear upgrade path to Riverpod or BLoC when backend data flows are added.
-
----
-
-## Screens & User Flow
-
-```
-SplashScreen  ──(auto, 10 s fade)──►  LoginScreen
-                                           │
-                                    ┌──────┴──────┐
-                                 login()        /signup
-                                    │               │
-                               HomeScreen      SignUpScreen
-                               (map + drawer)      │
-                                    │           register()
-                          ┌─────────┼──────────────┘
-                  drawer  │         │
-                 ┌────────┴──────┐  └───────────────────────────┐
-              /rides          /wallet   /saved   /settings   /help
-           RidesScreen    WalletScreen  ...         │
-                                              logout() clears stack → /login
-```
-
-**HomeScreen** renders a full-screen `MapView` beneath a floating `CustomAppBar`. On mount, `LocationBody` calls `geolocator` to resolve device position. While waiting, `_MapSkeletonLoader` displays a `CustomPainter` map skeleton with a shimmer animation. Once the position is available, `FlutterMap` initialises at the user's coordinates; `onMapReady` triggers an `AnimatedOpacity` reveal. A glassmorphism bottom panel overlays the map with the ride-type selector and the Confirm button.
+1. **App Bootstrap** — `App` (in `app.dart`) is the root `StatelessWidget`. It listens to `themeNotifier` via `ValueListenableBuilder`, so toggling `ThemeMode` anywhere in the app instantly rebuilds the `MaterialApp` with the correct theme.
+2. **Theme Resolution** — `AppTheme.light()` / `AppTheme.dark()` delegate to `LightTheme` and `DarkTheme`, which build complete `ThemeData` objects from the shared `AppColors` and `AppFonts` tokens — keeping every screen visually consistent without repeating style code.
+3. **Routing** — `AppRoutes.routes` maps route names to builders. Routes that depend on a Cubit (login, sign-up) are wrapped in `BlocProvider` at the route level, so each screen receives a freshly-scoped Cubit instance.
+4. **Authentication Flow** — `LoginScreen` reads `LoginCubit` via `context.read`, validates the form, and calls `cubit.login(...)`. The Cubit emits `loading`, then `success` or `error` through an immutable `LoginState`. A `BlocListener` reacts to state changes: navigating to `/home` on success, or showing a `SnackBar` on error. The same pattern is mirrored in `SignUpCubit` for registration.
+5. **Navigation Drawer** — `AppSideBar` drives a single `AnimationController` that staggers the entrance of its header, section labels, divider, and tiles using `Interval`-based curves — giving the drawer a polished, sequenced reveal rather than a static pop-in.
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-- Flutter SDK ≥ 3.x  
-- Dart ≥ 3.x  
-- Android or iOS device / emulator with location services enabled
-
-### Installation
+## Installation & Setup
 
 ```bash
-git clone https://github.com/<your-username>/my_taxi.git
+# 1. Clone the repository
+git clone <repository-url>
 cd my_taxi
+
+# 2. Install dependencies
 flutter pub get
+
+# 3. Run the app
 flutter run
 ```
 
-### Platform Permissions
+**Requirements:**
+- Flutter SDK (Material 3 enabled)
+- `flutter_bloc` package for state management
 
-**Android** — `android/app/src/main/AndroidManifest.xml`
-
-```xml
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-```
-
-**iOS** — `ios/Runner/Info.plist`
-
-```xml
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>MyTaxi needs your location to show the map and find nearby rides.</string>
-```
+> This snapshot does not include a `pubspec.yaml`. To run standalone, initialize a Flutter project (`flutter create my_taxi`) and add `flutter_bloc` to `pubspec.yaml` before copying this `lib/` directory in.
 
 ---
 
-## Build Commands
+## Screenshots
 
-```bash
-# Android APK
-flutter build apk --release
+> Screenshots to be added.
 
-# Android App Bundle (Play Store)
-flutter build appbundle --release
-
-# iOS (requires macOS + Xcode)
-flutter build ipa
-```
-
----
-
-## Key Dependencies
-
-| Package | Purpose |
-|---|---|
-| `flutter_map` | Tile-based interactive map widget (OSM / MapTiler compatible) |
-| `latlong2` | `LatLng` coordinate type required by `flutter_map` |
-| `geolocator` | Runtime GPS access and permission management |
-
-> **MapTiler API key** is stored in `lib/core/constants.dart`. Replace the value of `AppConstants.mapKey` with your own key from [maptiler.com](https://www.maptiler.com) before running or deploying.
-
----
-
-## Code Quality Notes
-
-- All private sub-widgets are decomposed into named `_PrivateClass` components, keeping `build` methods readable and focused.
-- Every `AnimationController` is disposed in the corresponding `dispose()` override.
-- All async methods guard against post-unmount state updates with `if (!mounted) return`.
-- `CustomAppBar` correctly implements `PreferredSizeWidget` and is reusable across all screens.
-- `_MapTilePainter.shouldRepaint` returns `false` when the shimmer value is unchanged, preventing unnecessary redraws.
-- `_ShimmerBox` normalises the animation value range before clamping gradient stops, avoiding `assert` failures on edge values.
-- Form validation is co-located with each field definition rather than in a separate validator file, keeping forms self-contained.
+| Login Screen | Navigation Drawer | Dark Mode |
+|---|---|---|
+| _placeholder_ | _placeholder_ | _placeholder_ |
 
 ---
 
 ## Future Improvements
 
-Based on the structure and scaffolding visible in the codebase:
+Logical next steps based on the current architecture:
 
-- **Connect auth** — wire login and sign-up to a real backend (e.g. Firebase Auth or a REST API); the `Future.delayed` mock in both screens is the intended integration point.
-- **Destination input** — `_LocationInputForm` in `body.dart` is an empty `Container` stub, ready for a pickup / drop-off address search flow.
-- **Route display** — add a `PolylineLayer` to `MapView` once origin and destination are resolved.
-- **Persist theme preference** — store the user's dark/light choice across sessions using `shared_preferences`.
-- **Complete the bottom bar** — `lib/widgets/bottom_bar.dart` is an empty file stub.
-- **Activate Arabic locale** — `AppFonts` and `AppTheme` already resolve Arabic font and locale; a language-switcher in Settings just needs to call `themeNotifier`'s equivalent for locale.
-- **Introduce state management** — add Riverpod or BLoC as backend data flows (location stream, ride status, wallet balance) require reactive updates across screens.
-- **Replace static data** — rides history, wallet transactions, and saved places are hardcoded; each screen is structured to accept a data list, making the API wiring straightforward.
+- Implement the `domain` layer (entities, repositories, usecases) that is already scaffolded but currently empty, connecting the presentation Cubits to real data sources.
+- Replace the simulated `Future.delayed` calls in `LoginCubit` and `SignUpCubit` with real authentication requests (e.g. REST/Firebase).
+- Complete the `BottomBar` widget (currently an empty file) to support primary tab navigation.
+- Build out the remaining screens already referenced in `AppRoutes` (home, rides, wallet, saved places, settings, help, splash, sign-up) to match the established design system.
+- Add persistent theme storage (e.g. `shared_preferences`) so the user's light/dark preference survives app restarts.
+- Introduce form validators (`AuthValidators`) and shared input/button widgets (`AuthTextField`, `SocialButton`) as first-class, tested components.
+
+---
+
+## Engineering Notes for Reviewers
+
+This codebase reflects an engineering mindset focused on **structure before features**: a tokenized design system, locale-aware theming, Cubit-driven state isolation, and Clean Architecture folder conventions are all in place before a single business screen is finished. That ordering — architecture first, screens second — is what separates a maintainable production codebase from a prototype, and it is the standard this project was built to meet.
