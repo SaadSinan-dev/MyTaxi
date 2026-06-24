@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_taxi/core/colors/app_colors.dart';
-
-import 'animated_drawer_tile.dart';
-import 'sidebar_components.dart';
-import 'sidebar_footer.dart';
-import 'sidebar_header.dart';
-import 'sidebar_item_model.dart';
+import 'package:my_taxi/core/widgets/sidebar/models/side_bar_item_model.dart';
+import 'package:my_taxi/core/widgets/sidebar/widgets/animated_drawer_tile.dart';
+import 'package:my_taxi/core/widgets/sidebar/widgets/side_bar_footer.dart';
+import 'package:my_taxi/core/widgets/sidebar/widgets/side_bar_header.dart';
+import 'package:my_taxi/core/widgets/sidebar/widgets/side_bar_tile.dart';
 
 class AppSideBar extends StatefulWidget {
   const AppSideBar({super.key});
@@ -55,7 +53,6 @@ class _AppSideBarState extends State<AppSideBar>
   @override
   void initState() {
     super.initState();
-
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
@@ -68,53 +65,36 @@ class _AppSideBarState extends State<AppSideBar>
     super.dispose();
   }
 
-  void _navigateTo({
-    required String route,
-    required int index,
-  }) {
+  void _navigateTo({required String route, required int index}) {
     HapticFeedback.selectionClick();
 
-    setState(() {
-      _activeIndex = index;
-    });
+    setState(() => _activeIndex = index);
 
     final navigator = Navigator.of(context);
-
     navigator.pop();
 
-    Future.delayed(
-      const Duration(milliseconds: 250),
-      () {
-        if (!mounted) return;
-
-        navigator.pushNamed(route);
-      },
-    );
+    Future.delayed(const Duration(milliseconds: 250), () {
+      if (!mounted) return;
+      navigator.pushNamed(route);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.72,
       backgroundColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.scaffold,
-        ),
+        color: colorScheme.surface,
         child: Column(
           children: [
-            SideBarHeader(
-              animController: _animController,
-            ),
+            SideBarHeader(animController: _animController),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.only(
-                  top: 8,
-                  bottom: 8,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 physics: const BouncingScrollPhysics(),
                 children: [
                   SectionLabel(
@@ -147,7 +127,6 @@ class _AppSideBarState extends State<AppSideBar>
                   ),
                   ..._secondaryItems.asMap().entries.map((e) {
                     final idx = _mainItems.length + e.key;
-
                     return AnimatedDrawerTile(
                       item: e.value,
                       index: idx,
@@ -164,6 +143,7 @@ class _AppSideBarState extends State<AppSideBar>
             ),
             SideBarFooter(
               animController: _animController,
+              onLogout: () {},
             ),
           ],
         ),

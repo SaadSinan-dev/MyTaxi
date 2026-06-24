@@ -9,7 +9,11 @@ class HelpScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.card,
       appBar: AppBar(
-        title: Text('Help & Support'),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'Help & Support',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: AppColors.primary,
       ),
       body: ListView(

@@ -9,7 +9,11 @@ class RidesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.textWhite,
       appBar: AppBar(
-        title: Text('Rides'),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'Rides',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: AppColors.primary,
       ),
       body: ListView(

@@ -2,6 +2,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 }
 
@@ -11,6 +12,21 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(":app")
+}
+
+gradle.projectsEvaluated {
+    subprojects { project ->
+        if (project.plugins.hasPlugin('com.android.library')) {
+            project.tasks.matching {
+                it.name.startsWith('extractDebugAnnotations') ||
+                it.name.startsWith('extractReleaseAnnotations') ||
+                it.name.startsWith('syncDebugLibJars') ||
+                it.name.startsWith('syncReleaseLibJars')
+            }.configureEach {
+                enabled = false
+            }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {

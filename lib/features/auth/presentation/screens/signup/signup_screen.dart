@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_taxi/core/colors/app_colors.dart';
+import 'package:my_taxi/core/spacing/app_spacing.dart';
 import 'package:my_taxi/features/auth/presentation/cubit/signup/sign_up_cubit.dart';
 import 'package:my_taxi/features/auth/presentation/cubit/signup/sign_up_state.dart';
 import 'package:my_taxi/features/auth/presentation/validators/auth_validators.dart';
@@ -43,7 +45,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SignUpCubit, SignUpState>(
+    return BlocConsumer<SignUpCubit, SignUpState>(
+      listener: (context, state) {
+        if (state.status == SignUpStatus.success) {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+
+        if (state.status == SignUpStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Something went wrong'),
+            ),
+          );
+        }
+      },
       builder: (context, state) {
         final cubit = context.read<SignUpCubit>();
 
@@ -55,34 +70,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
             backgroundColor: Colors.white,
             body: SafeArea(
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
                 child: Form(
                   key: formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.sm),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: const Icon(Icons.arrow_back_ios_new),
                       ),
-                      const SizedBox(height: 24),
-                      const Text(
-                        'Create Account',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
+                      const SizedBox(height: AppSpacing.md),
+                      Center(
+                        child: Container(
+                          width: 130,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: const Icon(
+                            Icons.local_taxi_rounded,
+                            color: Colors.white,
+                            size: 100,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: AppSpacing.md),
+                      const Center(
+                        child: Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
                       AuthTextField(
                         controller: nameController,
                         hintText: 'Full name',
                         icon: Icons.person_rounded,
                         validator: AuthValidators.name,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       AuthTextField(
                         controller: phoneController,
                         hintText: 'Phone number',
@@ -90,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         keyboardType: TextInputType.phone,
                         validator: AuthValidators.phone,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       AuthTextField(
                         controller: passwordController,
                         hintText: 'Password',
@@ -106,7 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       AuthTextField(
                         controller: confirmPasswordController,
                         hintText: 'Confirm password',
@@ -125,7 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: AppSpacing.lg),
                       SizedBox(
                         width: double.infinity,
                         height: 55,
@@ -140,12 +175,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               : const Text('Sign Up'),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Center(
-                        child: TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Already have account? Login'),
-                        ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Already have account?'),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Login'),
+                          ),
+                        ],
                       ),
                     ],
                   ),

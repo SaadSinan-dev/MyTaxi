@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_taxi/core/colors/app_colors.dart';
+import 'package:my_taxi/core/spacing/app_spacing.dart';
 import 'package:my_taxi/features/auth/presentation/cubit/login/login_cubit.dart';
 import 'package:my_taxi/features/auth/presentation/cubit/login/login_state.dart';
 import 'package:my_taxi/features/auth/presentation/validators/auth_validators.dart';
@@ -43,12 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state.status == LoginStatus.success) {
           Navigator.pushReplacementNamed(context, '/home');
         }
-
         if (state.status == LoginStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage ?? 'Login failed'),
-            ),
+            SnackBar(content: Text(state.errorMessage ?? 'Login failed')),
           );
         }
       },
@@ -65,31 +63,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 return SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 18,
+                    horizontal: AppSpacing.md,
                   ),
                   child: Form(
                     key: formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 20),
-                        Center(
-                          child: Container(
-                            width: 82,
-                            height: 82,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: const Icon(
-                              Icons.local_taxi_rounded,
-                              color: Colors.white,
-                              size: 42,
-                            ),
+                        const SizedBox(height: AppSpacing.xl + AppSpacing.xs),
+                        Container(
+                          width: 130,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: const Icon(
+                            Icons.local_taxi_rounded,
+                            color: Colors.white,
+                            size: 100,
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: AppSpacing.lg),
+                        const Text(
+                          "My Taxi",
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xxl),
                         AuthTextField(
                           controller: phoneController,
                           hintText: 'Phone number',
@@ -97,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           keyboardType: TextInputType.phone,
                           validator: AuthValidators.phone,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         AuthTextField(
                           controller: passwordController,
                           hintText: 'Password',
@@ -105,9 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: state.obscurePassword,
                           validator: AuthValidators.password,
                           suffixIcon: IconButton(
-                            onPressed: () {
-                              cubit.togglePasswordVisibility();
-                            },
+                            onPressed: cubit.togglePasswordVisibility,
                             icon: Icon(
                               state.obscurePassword
                                   ? Icons.visibility_off
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.xs),
                         Row(
                           children: [
                             Checkbox(
@@ -125,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text('Remember me'),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSpacing.sm),
                         SizedBox(
                           width: double.infinity,
                           height: 55,
@@ -145,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : const Text('Login'),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSpacing.xl),
                         Row(
                           children: [
                             Expanded(
@@ -155,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onTap: () {},
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: AppSpacing.xs),
                             Expanded(
                               child: SocialButton(
                                 icon: Icons.apple,
@@ -165,15 +166,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        Center(
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/signup');
-                            },
-                            child: const Text('Create account'),
-                          ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Don't have account?"),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/signup');
+                              },
+                              child: const Text("Create account"),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: AppSpacing.sm),
                       ],
                     ),
                   ),

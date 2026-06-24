@@ -9,7 +9,11 @@ class SavedplacesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Saved Places'),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: const Text(
+          'Saved Places',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: AppColors.primary,
       ),
       body: ListView(

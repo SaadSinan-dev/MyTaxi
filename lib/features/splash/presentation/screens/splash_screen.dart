@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_taxi/core/colors/app_colors.dart';
-import 'package:my_taxi/features/auth/presentation/screens/login/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -86,18 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (_, animation, __) => const LoginScreen(),
-        transitionsBuilder: (_, animation, __, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 600),
-      ),
-    );
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   @override

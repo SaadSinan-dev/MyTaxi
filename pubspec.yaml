@@ -11,12 +11,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
 
   cupertino_icons: ^1.0.8
-  geolocator: ^10.1.0
+  geolocator: 9.0.2
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
-
+dependency_overrides:
+  geolocator_android: 4.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

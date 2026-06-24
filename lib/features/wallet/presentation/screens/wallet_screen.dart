@@ -9,7 +9,11 @@ class WalletScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('My Wallet'),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: const Text(
+          'My Wallet',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: AppColors.primary,
       ),
       body: ListView(

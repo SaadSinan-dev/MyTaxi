@@ -9,7 +9,11 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.card,
       appBar: AppBar(
-        title: Text('Settings'),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'Settings',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: AppColors.primary,
       ),
       body: ListView(
