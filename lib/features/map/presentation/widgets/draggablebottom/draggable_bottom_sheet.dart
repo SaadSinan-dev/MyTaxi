@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:my_taxi/core/colors/app_colors.dart';
 import 'package:my_taxi/features/map/presentation/widgets/draggablebottom/models/step_content.dart';
 import 'package:my_taxi/features/map/presentation/widgets/draggablebottom/models/step_indicator.dart';
 import 'package:my_taxi/features/map/presentation/widgets/order_now_bar.dart';
