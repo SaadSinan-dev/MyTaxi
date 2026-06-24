@@ -136,15 +136,7 @@ flutter run
 
 ---
 
-## Screenshots
 
-> Screenshots to be added.
-
-| Login Screen | Navigation Drawer | Dark Mode |
-|---|---|---|
-| _placeholder_ | _placeholder_ | _placeholder_ |
-
----
 
 ## Future Improvements
 
